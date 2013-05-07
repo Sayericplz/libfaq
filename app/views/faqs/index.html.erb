@@ -1,0 +1,187 @@
+<div class="header"><h1 class="header">图书馆FAQ管理</h1></div>
+<div id="pre">
+<p>你好，<%= session[:current_user] %>&nbsp;&nbsp;&nbsp;<%=link_to '注销',{:controller=>"home",:action=>"logout"},data: { confirm: '确定注销？' }%></p>
+<%= form_tag(sift_faqs_path,:method=>"get") do %>
+  <div>
+    <%= check_box_tag(:enabled_box,value='1',checked = session[:enabled])%>
+    <%= label_tag(:enabled, "已通过审核") %>
+    <%= check_box_tag(:disabled_box,value='1',checked = session[:disabled])%>
+    <%= label_tag(:disabled, "未通过审核") %>
+  </div>
+  <div style="height:10px"></div>
+  <div>
+    <%= label_tag(:dateLabel, "时间：") %>
+    <%= text_field_tag(:firstDate,value=session[:firstDate]) %>至
+    <%= text_field_tag(:secondDate,value=session[:secondDate]) %>
+  </div>
+  <div style="height:10px"></div>
+  <div>
+    <%= label_tag(:keywordsLabel, "关键词：") %>
+    <%= text_field_tag(:keywords,value=session[:keywords]) %>
+  </div>
+  <div style="height:10px"></div>
+  <div>
+    <%= label_tag(:questionLabel, "问题：") %>
+    <%= text_field_tag(:question,value=session[:question]) %>
+  </div>
+  <div style="height:10px"></div>
+  <div> 
+    <%= submit_tag("搜索") %>
+  </div>
+  <div style="height:5px"></div>
+<% end %>
+<input type="button" value="重置" onclick="javascript:reset();" />
+<p>共找到<%= session[:backsize] %>条符合条件的记录,共有<%= session[:backpages] %>页</p>
+</div>
+<table border = "1" id = 'results'>
+  <tr>
+    <th>关键词</th>
+    <th>问题</th>
+    <th>提问时间</th>
+    <th>回答</th>
+    <th>回答时间</th>
+    <th>审核人员</th>
+    <th>审核时间</th>
+    <th>提问次数</th>
+    <th>审核是否通过</th>
+    <th colspan="3">操作</th>
+  </tr>
+
+<% @faqs.each do |faq| %>
+  <tr>
+    <td align="left"><%= if faq.keywords.length>7 then faq.keywords[0,7]+"..." else faq.keywords end %></td>
+    <td align="left"><%= if faq.question.length>10 then faq.question[0,10]+"..." else faq.question end %></td>
+    <td><%= unless(faq.questiondate.nil?) then faq.questiondate.strftime("%Y.%m.%d") end %></td>
+    <td align="left"><%= if !faq.answer.nil? and faq.answer.length>10 then faq.answer[0,10]+"..." else faq.answer end %></td>
+    <td><%= unless(faq.answerdate.nil?) then faq.answerdate.strftime("%Y.%m.%d") end %></td>
+    <td><%= faq.checkperson %></td>
+    <td><%= unless(faq.checkdate.nil?) then faq.checkdate.strftime("%Y.%m.%d") end %></td>
+    <td><%= faq.hit %></td>
+    <td><%= if(faq.enable == true) then "是" else "否" end %></td>
+    <td><%= link_to '查看', faq %></td>
+    <td><%= link_to '编辑', edit_faq_path(faq) %></td>
+    <td><%= link_to '删除', faq, method: :delete, data: { confirm: '确定删除该问题？' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<div id="pages">
+<% if session[:backpages] != 0 %>
+当前第<%= session[:backpage]%>页|
+<%= link_to '首页',firstpage_faqs_path  %>|
+<%= link_to '上一页',prepage_faqs_path  %>|
+<%= link_to '下一页',nextpage_faqs_path  %>|
+<%= link_to '末页',lastpage_faqs_path  %>&nbsp;&nbsp;
+<div style="height:10px"></div>
+<%= form_tag(inputpage_faqs_path,:method=>"get") do %>
+<%= label_tag(:numlabel1, "跳转到第") %>
+<%= text_field_tag(:pagenum,value='1') %>
+<%= label_tag(:numlabel2, "页") %>
+<%= submit_tag("确定") %>&nbsp;&nbsp;
+<% end %>
+<% end %>
+</div>
+<br />
+<%= link_to '创建一个新问题', new_faq_path %>
+
+<style type="text/css">
+p {color:red}
+a:link,
+a:visited { 
+color:#0000FF; 
+text-decoration:underline; 
+} 
+a:hover,
+a:active { 
+color:#FFFFFF; 
+text-decoration:none; 
+}
+#results{
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  width:100%;
+  border-collapse:collapse;
+}
+
+#results td, #results th {
+  font-size:1em;
+  border:1px solid #226699;
+  padding:3px 7px 2px 7px;
+}
+
+#results th {
+  font-size:1.1em;
+  text-align:center;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#006699;
+  color:#ffffff;
+}
+
+#pre {
+  text-align: right;
+  padding: 1em;
+}
+
+#pages{
+  text-align: right;
+}
+.page{
+  cursor: pointer;
+}
+#pagenum{
+  ime-mode:disabled;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('#firstDate').datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true}); 
+  $('#secondDate').datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true });
+  var rows = <%= session[:backsize] %>; 
+  if(rows == 0)
+  {
+    $('#results').find('th').hide(); 
+  };
+  $('#pagenum').css("width","30px");
+  $('#pagenum').keypress(function(event) {
+    var code = (event.keyCode ? event.keyCode : event.which);
+    if (!(code >= 48 && code <= 57))
+    {
+      event.preventDefault();
+    }
+  });
+  //var no_begin_page = 15;
+  //var no_pages = Math.ceil(rows/no_begin_page);
+  //var $pagenumbers = $('<div id="pages"></div>'); 
+  //for(var i=0;i<no_pages;i++) 
+  //{ 
+   // $('<span class="page">'+(i+1)+'&nbsp;'+'</span>').appendTo($pagenumbers);
+  //} 
+  //$pagenumbers.appendTo('#pages');
+  //$('#results').find('tbody tr').hide(); 
+  //var tr = $('#results tbody tr'); 
+  //$(tr[0]).show();
+  //for (var i=1;i<no_begin_page+1;i++) 
+  //{ 
+  // $(tr[i]).show(); 
+  //} 
+  //$('.page').click(function(event){ 
+   // $("#results").find('tbody tr').hide(); 
+   // $.get('pagechange?page='+$(this).text());
+    //$(tr[0]).show();
+    //for(var i=($(this).text()-1)*no_begin_page+1;i<=$(this).text()*no_begin_page;i++) { 
+     // $(tr[i]).show(); 
+    //}
+
+  //}); 
+});
+
+function reset(){
+  $('#firstDate').attr("value","");
+  $('#secondDate').attr("value","");
+  $('#keywords').attr("value","");
+  $('#question').attr("value","");
+};
+</script>
+

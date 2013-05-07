@@ -1,0 +1,101 @@
+<div class="header"><h1 class="header">问题查看</h1></div>
+<div style="height:50px"></div>
+
+<% if  notice.nil? %>
+<%= link_to '返回', changepage_faqs_path  %>
+<% else %>
+<%= link_to '返回首页', changepage_faqs_path  %>
+<% end %>
+<div style="height:30px"></div>
+<table width='100%'>
+<tr>
+<td align='center'>
+<p id="notice"><%= notice %></p>
+  <table border = "1" id="ta">
+  <tr>
+  <td class="left" width="30%">关键词</td> 
+  <td><%= @faq.keywords %></td>
+  </tr>
+
+  <tr>
+  <td class="left">问题</td>
+  <td><%= @faq.question %></td>
+  </tr>
+
+  <tr>
+  <td class="left">提问时间</td>
+  <td><%= unless(@faq.questiondate.nil?) then @faq.questiondate.strftime("%Y.%m.%d %H:%M:%S") end %></td>
+  </tr>
+
+  <tr>
+  <td class="left">回答</td>
+  <td align="left"><%= @faq.answer %></td>
+  </tr>
+
+  <tr>
+  <td class="left">回答时间</td>
+  <td><%= unless(@faq.answerdate.nil?) then @faq.answerdate.strftime("%Y.%m.%d %H:%M:%S") end %></td>
+  </tr>
+
+  <tr>
+  <td class="left">审核人员</td>
+  <td><%= @faq.checkperson %></td>
+  </tr>
+
+  <tr>
+  <td class="left">审核时间</td>
+  <td><%= unless(@faq.checkdate.nil?) then @faq.checkdate.strftime("%Y.%m.%d %H:%M:%S") end %></td>
+  </tr>
+
+  <tr>
+  <td class="left">提问次数</td>
+  <td><%= @faq.hit %></td>
+  </tr>
+
+  <tr>
+  <td class="left">审核是否通过</td>
+  <td><%= if(@faq.enable == true) then "是" else "否" end %></td>
+  </tr>
+  </table>
+
+</td>
+</tr>
+</table>
+<div style="height:50px"></div>
+<% if  notice.nil? %>
+<%= link_to '返回', changepage_faqs_path  %>
+<% else %>
+<%= link_to '返回首页', changepage_faqs_path  %>
+<% end %>
+
+<style type="text/css">
+a:link,
+a:visited { 
+color:#0000FF; 
+text-decoration:underline; 
+} 
+a:hover,
+a:active { 
+color:#FFFFFF; 
+text-decoration:none; 
+}
+#ta{
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  width:80%;
+  border-collapse:collapse;
+}
+#ta td {
+  font-size:1em;
+  border:2px solid #000099;
+  padding:8px 2px 8px 2px;
+  align:center;
+}
+.left {
+  font-size:1.1em;
+  text-align:center;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#006699;
+  color:#ffffff;
+}
+</style>

@@ -1,0 +1,110 @@
+<table width='100%'>
+<tr>
+<td align='center'>
+<div style="height:50px"></div>
+<%= form_for(@faq) do |f| %>
+  <% if @faq.errors.any? %>
+    <div id="error_explanation" text-align="center">
+      <h2><%= pluralize(@faq.errors.count, "error") %> prohibited this faq from being saved:</h2>
+      <ul>
+      <% @faq.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="field" id="maindiv">
+    <table border = "1" id="ta">
+      <tr>
+      <td class="left"><%= f.label "关键词" %></td>
+      <td><%= f.text_field :keywords %></td>
+      </tr>
+      <tr>
+      <td class="left"><%= f.label "问题" %></td>
+      <td><%= f.text_area :question %></td>
+      </tr>
+      <tr>
+      <td class="left"><%= f.label "提问时间" %></td>
+      <td><%= f.datetime_select :questiondate %></td>
+      </tr>
+      <tr>
+      <td class="left"><%= f.label "回答" %></td>
+      <td><%= f.text_area :answer %></td>
+      </tr>
+      <tr>
+      <td class="left"><%= f.label "回答时间" %></td>
+      <td><%= f.datetime_select :answerdate %></td>
+      </tr>
+      <tr>
+      <td class="left"><%= f.label "提问次数" %></td>
+      <td><%= f.text_field :hit %></td>
+      </tr>
+      <tr>
+      <td class="left"><%= f.label "审核是否通过" %></td>
+      <td><%= f.check_box :enable %></td>
+      </tr>
+    </table>
+  </div>
+  <div class="actions">
+    <%= f.submit "提交" %>
+  </div>
+<% end %>
+</td>
+</tr>
+</table>
+
+<style type="text/css">
+a:link,
+a:visited { 
+color:#0000FF; 
+text-decoration:underline; 
+} 
+a:hover,
+a:active { 
+color:#FFFFFF; 
+text-decoration:none; 
+}
+#ta{
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  width:80%;
+  border-collapse:collapse;
+}
+#ta td {
+  font-size:1em;
+  border:2px solid #000099;
+  padding:8px 2px 8px 2px;
+  align:center;
+}
+.left {
+  font-size:1.1em;
+  text-align:center;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#006699;
+  color:#ffffff;
+}
+#faq_hit{
+  ime-mode:disabled;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+  //$('#answer').attr("onkeyup","this.value=this.value.replace(/\D/g,'')" );
+  //$('#answer').onafterpaste("this.value=this.value.replace(/\D/g,'')" );
+  //$('#answer').change(function() {
+   // $(this).val($(this).val().match(/\d*\.?\d+/));
+  //});
+  $('#faq_hit').keypress(function(event) {
+    var code = (event.keyCode ? event.keyCode : event.which);
+    if (!(code >= 48 && code <= 57))
+    {
+      event.preventDefault();
+    }
+    //var charCode = (event.which) ? event.which : event.keyCode
+    //if (charCode > 31 && (charCode < 48 || charCode > 57))
+    //    return false;
+    //return true;
+  });
+});
+</script>
+

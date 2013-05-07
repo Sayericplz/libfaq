@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>图书馆FAQ</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<div id="mainbody">
+<%= yield %>
+</div>
+</body>
+</html>
+<style type="text/css">
+#mainbody {
+  width:980px;
+  height: 1200px;
+  overflow:visible;
+  margin-left:auto;
+  margin-right:auto;
+  background-color:white;
+  text-align: center;
+  vertical-align: center;
+  border:3px solid black;
+  line-height:150%;
+}
+html{
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+body{
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background:#DDDDDD;
+}
+div.header,div.footer
+{
+padding:0.5em;
+color:white;
+background-color:black;
+}
+h1.header
+{
+padding:0;
+margin:0;
+}
+</style>
+

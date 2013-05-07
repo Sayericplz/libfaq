@@ -1,0 +1,189 @@
+<div class="header"><h1 class="header">这里是用户提问通道</h1></div>
+
+<br/>
+<div id="pre">
+	<%=link_to "管理员登录",{:controller=>"home",:action=>"index"}%>
+</div>
+<div id = "questionform">
+  <%= form_tag(:action=>"search") do %> 
+  	<span>
+      <%= text_field_tag :question %>
+	    <%= submit_tag "搜索"%>
+	  </span>
+  <% end %> 
+</div>
+<br/>
+<p id="num">共找到<%= session[:frontsize] %>条符合条件的记录,共有<%= session[:frontpages] %>页</p>
+<% if flash[:notice]=="none" %>
+      <p class="notice">找不到相关问题，我们已经记录相关问题，您可以电话咨询86-10-62782137，或通过<a href="http://vrs.lib.tsinghua.edu.cn/pub/index.htm">表单</a>咨询。谢谢！</p>
+<% elsif flash[:notice]=="success" %>
+      <p class="notice">您已提交问题，我们将尽快回复。</p>
+<% end %>
+<table width='100%'>
+<tr>
+<td align='center'>
+<table id = 'results'>
+<% @faqs.each do |faq| %>
+  <tr>
+    <td width='8%'>问题：</td>
+    <td align='left'><%= link_to (if faq.question.length>30 then faq.question[0,30]+"..." else faq.question end),{:action => "show",:id=> faq.id }%></td>
+  </tr>
+  <tr>
+    <td width='8%' valign='top'>回答：</td>
+    <td align='left'>
+    <%= if !faq.answer.nil? and faq.answer.length>200 then faq.answer[0,200]+"..." else faq.answer end%>
+   </td>
+  </tr>
+  <tr colspan='2' style="height:25px">
+  </tr>
+<% end %>
+</table>
+</td>
+</tr>
+</table>
+<br />
+<div id="pages">
+<% if session[:frontpages] != 0 %>
+当前第<%= session[:frontpage]%>页|
+<%= link_to '首页',{:action=>"firstpage"}   %>|
+<%= link_to '上一页',{:action=>"prepage"}  %>|
+<%= link_to '下一页',{:action=>"nextpage"}  %>|
+<%= link_to '末页',{:action=>"lastpage"}  %>&nbsp;&nbsp;
+<div style="height:10px"></div>
+<%= form_tag(:action=>'inputpage',:method=>"get") do %>
+<%= label_tag(:numlabel1, "跳转到第") %>
+<%= text_field_tag(:pagenum,value='1') %>
+<%= label_tag(:numlabel2, "页") %>
+<%= submit_tag("确定") %>&nbsp;&nbsp;
+<% end %>
+<% end %></div>
+<br />
+<%= link_to '我要提新问题', {:action=>"new"} %>
+
+<style type="text/css">
+p{color: red}
+
+a:link,
+a:visited { 
+color:#0000FF; 
+text-decoration:underline; 
+} 
+a:hover,
+a:active { 
+color:#FFFFFF; 
+text-decoration:none; 
+}
+
+#question{
+	width:500px;
+	height: 20px;
+	line-height: 1.8em;
+}
+
+#results{
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  width:80%;
+  border: 0;
+}
+
+#results td{
+  font-size:1.2em;
+  padding:3px 2px 5px 2px;
+}
+
+#pre{
+	text-align: right;
+	padding: 1em;
+  width: 88%;
+}
+#pages{
+  text-align: right;
+  width: 92%;
+}
+.hide{
+	display:none;
+}
+
+.page{
+  cursor: pointer;
+}
+#pagenum{
+  ime-mode:disabled;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var q = "<%= session[:q] %>";
+	$("#question").attr("value",q);
+  $('#pagenum').css("width","30px");
+  $('#pagenum').keypress(function(event) {
+    var code = (event.keyCode ? event.keyCode : event.which);
+    if (!(code >= 48 && code <= 57))
+    {
+      event.preventDefault();
+    }
+  });
+	//var no_begin_page = 5;
+  //var no_pages = Math.ceil(rows/no_begin_page);
+  //var $pagenumbers = $('<div id="pages"></div>'); 
+  //for(var i=0;i<no_pages;i++) 
+  //{ 
+   // $('<span class="page">'+(i+1)+'&nbsp;'+'</span>').appendTo($pagenumbers);
+  //} 
+  //$pagenumbers.appendTo('#pages');
+  //$('#results').find('tbody tr').hide(); 
+  //var tr = $('#results tbody tr'); 
+  //for (var i=0;i<no_begin_page;i++) 
+  //{ 
+  //  $(tr[i]).show(); 
+  //} 
+  //$('.page').click(function(event){ 
+  //  $("#results").find('tbody tr').hide(); 
+  //  for(var i=($(this).text()-1)*no_begin_page;i<$(this).text()*no_begin_page;i++) { 
+   //   $(tr[i]).show(); 
+  //  } 
+  //}); 
+});
+</script>
+<script>
+  $(function() {
+    var subs;
+    $( "#question" ).autocomplete({
+      source: function( request, response ) {
+          $.ajax({
+              url: "prompt",
+              dataType: "json",
+              data: {
+                style: "full",
+                maxRows: 10,
+                term: request.term
+              },                
+              success: function( data ) {
+                response( $.map( data, function( faq) {
+                  if(faq.question.length > 15)
+                  {
+                    subs = faq.question.substring(0,15)+"..."
+                  }
+                  else
+                  {
+                    subs = faq.question
+                  }
+                  return {
+                      question: subs,
+                      hit: faq.hit,
+                      value: faq.question
+                  }
+                }));
+              }
+          });
+      },
+      minLength: 2
+    }).data("autocomplete")._renderItem = function (ul, item) {
+      return $("<li></li>")
+    .data("item.autocomplete", item)
+    .append("<a><table width='100%'><tr><td>" + item.question  + "</td><td align='right'>"+item.hit + "次提问</td></tr></table></a>")
+    .appendTo(ul);
+    };
+  });
+</script>

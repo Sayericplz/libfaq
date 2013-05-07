@@ -1,0 +1,38 @@
+﻿<div class="header"><h1 class="header">这里是图书馆FAQ服务器</h1></div>
+<% if flash[:notice] %>
+  <p class="notice"><%= flash[:notice] %></p>
+<% end %>
+<div style="height:150px"></div>
+<div id = "login">
+  <%= form_for @user,:url=>{:action=>"login"} do |f|%> 
+    <div class="field">
+      <%= f.label :用户名 %>
+      <%= f.text_field :username %>
+    </div>
+    <div class="field">
+      <%= f.label "密  码"%>
+      <%= f.password_field :password %>
+    </div>
+    <div class="actions">
+      <%= f.submit "登录"%>
+    </div>
+  <% end %>
+</div>
+<br/>
+<br/>
+<br/>
+<%= link_to '进入提问通道',{:controller => "dms", :action => "index"}%>
+<style type="text/css">
+p {color:red}
+a:link,
+a:visited { 
+color:#0000FF; 
+text-decoration:underline; 
+} 
+a:hover,
+a:active { 
+color:#FFFFFF; 
+text-decoration:none; 
+}
+</style>
+

@@ -1,0 +1,118 @@
+<div class="header"><h1 class="header">提出一个新问题</h1></div>
+<br/>
+<% if flash[:notice]=="error1" %>
+  <p>验证码错误</p>
+<% elsif flash[:notice]=="error2" %>
+  <p>问题不能为空</p> 
+<% elsif flash[:notice]=="error3" %>
+  <p>联系方式不能为空</p> 
+<% elsif flash[:notice]=="error4" %>
+  <p>提交问题发生错误，请稍后重试</p> 
+<% end %>
+<table width='100%'>
+<tr>
+<td align='center'>
+<div style="height:50px"></div>
+<%= form_tag(:action=>"create") do%>
+  <div class="field">
+    <table border = "1" id="ta">
+    <tr>
+      <td class="left">关键词(用逗号隔开)</td>
+      <td><%= text_field_tag :keywords %></td>
+    </tr>
+    <tr>
+      <td class="left">问题(必填)</td>
+      <td><%= text_area_tag :question %></td>   
+    </tr>
+    <tr>
+      <td class="left">姓名</td>
+      <td><%= text_field_tag :name %></td>
+    </tr>
+    <tr>
+      <td class="left">单位</td>
+      <td><%= text_field_tag :department %></td>
+    </tr>
+    <tr>
+      <td class="left">联系方式(必填)</td>
+      <td><%= text_field_tag :phone %></td>
+    </tr>
+    <tr>
+      <td class="left">验证码</td>
+      <td><%= @captcha %><%= text_field_tag :answer,nil,{:onkeyup=>"this.value=this.value.replace(/\D/g,'')"}  %></td> 
+    </tr>
+    </table>
+  </div>
+  <div style="height:20px"></div>
+  <%= submit_tag "提交" %>
+<% end %>
+</td>
+</tr>
+</table>
+<div style="height:20px"></div>
+<%= link_to '返回',{:action => "changepage"} %>
+<style type="text/css">
+a:link,
+a:visited { 
+color:#0000FF; 
+text-decoration:underline; 
+} 
+a:hover,
+a:active { 
+color:#FFFFFF; 
+text-decoration:none; 
+}
+#ta{
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  width:80%;
+  border-collapse:collapse;
+}
+#ta td {
+  font-size:1em;
+  border:2px solid #000099;
+  padding:8px 2px 8px 2px;
+  align:center;
+}
+.left {
+  font-size:1.1em;
+  text-align:center;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#006699;
+  color:#ffffff;
+}
+#keywords,#name,#phone,#department{
+  width: 300px;
+}
+#question{
+  width: 300px;
+  height:300px;
+}
+#answer{
+  width: 30px;
+  ime-mode:disabled;
+}
+p{
+	color: red;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  //$('#answer').attr("onkeyup","this.value=this.value.replace(/\D/g,'')" );
+  //$('#answer').onafterpaste("this.value=this.value.replace(/\D/g,'')" );
+  //$('#answer').change(function() {
+   // $(this).val($(this).val().match(/\d*\.?\d+/));
+  //});
+  $('#answer').keypress(function(event) {
+    var code = (event.keyCode ? event.keyCode : event.which);
+    if (!(code >= 48 && code <= 57))
+    {
+      event.preventDefault();
+    }
+    //var charCode = (event.which) ? event.which : event.keyCode
+    //if (charCode > 31 && (charCode < 48 || charCode > 57))
+    //    return false;
+    //return true;
+  });
+});
+</script>

@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  keywords: MyString
+  question: MyText
+  questiondate: 2012-11-28 19:26:32
+  answer: MyText
+  answerdate: 2012-11-28 19:26:32
+  checkperson: MyString
+  checkdate: 2012-11-28 19:26:32
+  hit: 1
+  enable: false
+
+two:
+  keywords: MyString
+  question: MyText
+  questiondate: 2012-11-28 19:26:32
+  answer: MyText
+  answerdate: 2012-11-28 19:26:32
+  checkperson: MyString
+  checkdate: 2012-11-28 19:26:32
+  hit: 1
+  enable: false
