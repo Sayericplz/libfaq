@@ -15,7 +15,7 @@
 <br/>
 <p id="num">共找到<%= session[:frontsize] %>条符合条件的记录,共有<%= session[:frontpages] %>页</p>
 <% if flash[:notice]=="none" %>
-      <p class="notice">找不到相关问题，我们已经记录相关问题，您可以电话咨询86-10-62782137，或通过<a href="http://vrs.lib.tsinghua.edu.cn/pub/index.htm">表单</a>咨询。谢谢！</p>
+      <p class="notice">找不到相关问题，我们已经记录相关问题，您可以电话咨询86-10-62782137，或通过<a href="http://vrs.lib.tsinghua.edu.cn/pub/question_form.asp">表单</a>咨询。谢谢！</p>
 <% elsif flash[:notice]=="success" %>
       <p class="notice">您已提交问题，我们将尽快回复。</p>
 <% end %>
@@ -58,7 +58,7 @@
 <% end %>
 <% end %></div>
 <br />
-<%= link_to '我要提新问题', {:action=>"new"} %>
+<a href="http://vrs.lib.tsinghua.edu.cn/pub/question_form.asp">我要提新问题</a>
 
 <style type="text/css">
 p{color: red}
