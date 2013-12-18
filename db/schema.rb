@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121128112632) do
+ActiveRecord::Schema.define(:version => 20131218013420) do
 
   create_table "faqs", :force => true do |t|
     t.string   "keywords"
@@ -26,6 +26,16 @@ ActiveRecord::Schema.define(:version => 20121128112632) do
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
   end
+
+  create_table "records", :force => true do |t|
+    t.integer  "faq_id"
+    t.date     "thedate"
+    t.integer  "count"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "records", ["faq_id"], :name => "index_records_on_faq_id"
 
   create_table "users", :force => true do |t|
     t.string   "username"

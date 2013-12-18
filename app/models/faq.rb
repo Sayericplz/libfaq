@@ -3,4 +3,5 @@ class Faq < ActiveRecord::Base
   validates :question,	:presence => true
   validates :hit, :presence => true,
   								:numericality => { :only_integer => true }
+  has_many :records
 end

@@ -10,6 +10,14 @@ Libfaq::Application.routes.draw do
     get 'lastpage',:on=>:collection
     get 'changepage',:on=>:collection
     get 'inputpage',:on=>:collection
+    get 'stats',:on=>:collection
+    get 'sift2',:on=>:collection
+    get 'firstpage2',:on=>:collection
+    get 'prepage2',:on=>:collection
+    get 'nextpage2',:on=>:collection
+    get 'lastpage2',:on=>:collection
+    get 'changepage2',:on=>:collection
+    get 'inputpage2',:on=>:collection
   end
   get "home/index"
   post "home/login"

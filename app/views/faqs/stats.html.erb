@@ -1,0 +1,119 @@
+<div class="header"><h1 class="header">图书馆FAQ管理</h1></div>
+<div id="pre">
+<p>你好，<%= session[:current_user] %>&nbsp;&nbsp;&nbsp;<%=link_to '注销',{:controller=>"home",:action=>"logout"},data: { confirm: '确定注销？' }%></p>
+<%= form_tag(sift2_faqs_path,:method=>"get") do %>
+  <div style="height:10px"></div>
+  <div>
+    <%= label_tag(:dateLabel, "时间：") %>
+    <%= text_field_tag(:firstDate2,value=session[:firstDate2]) %>至
+    <%= text_field_tag(:secondDate2,value=session[:secondDate2]) %>
+  </div>
+  <div style="height:10px"></div>
+  <div> 
+    <%= submit_tag("搜索") %>
+  </div>
+  <div style="height:10px"></div>
+<% end %>
+<table border = "1" id = 'results'>
+  <tr>
+    <th>问题ID</th>
+    <th>问题描述</th>
+    <th>总访问次数</th>
+    <th>操作</th>
+  </tr>
+<% @records.each do |record| %>
+  <tr>
+    <td><%= record.id %></td>
+    <td><%= record.question %></td>
+    <td><%= (record.total).to_i %></td>
+    <td>无</td>
+  </tr>
+<% end %>
+</table>
+<br />
+<div id="pages">
+<% if session[:backpages2] != 0 %>
+当前第<%= session[:backpage2]%>页|
+<%= link_to '首页',firstpage2_faqs_path  %>|
+<%= link_to '上一页',prepage2_faqs_path  %>|
+<%= link_to '下一页',nextpage2_faqs_path  %>|
+<%= link_to '末页',lastpage2_faqs_path  %>&nbsp;&nbsp;
+<div style="height:10px"></div>
+<%= form_tag(inputpage2_faqs_path,:method=>"get") do %>
+<%= label_tag(:numlabel1, "跳转到第") %>
+<%= text_field_tag(:pagenum,value='1') %>
+<%= label_tag(:numlabel2, "页") %>
+<%= submit_tag("确定") %>&nbsp;&nbsp;
+<% end %>
+<% end %>
+</div>
+<br />
+
+<style type="text/css">
+p {color:red}
+a:link,
+a:visited { 
+color:#0000FF; 
+text-decoration:underline; 
+} 
+a:hover,
+a:active { 
+color:#FFFFFF; 
+text-decoration:none; 
+}
+#results{
+  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  width:100%;
+  border-collapse:collapse;
+}
+
+#results td, #results th {
+  font-size:1em;
+  border:1px solid #226699;
+  padding:3px 7px 2px 7px;
+}
+
+#results th {
+  font-size:1.1em;
+  text-align:center;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#006699;
+  color:#ffffff;
+}
+
+#pre {
+  text-align: right;
+  padding: 1em;
+}
+
+#pages{
+  text-align: right;
+}
+.page{
+  cursor: pointer;
+}
+#pagenum{
+  ime-mode:disabled;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('#firstDate2').datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true}); 
+  $('#secondDate2').datepicker({ dateFormat: 'yy-mm-dd',changeMonth: true,changeYear: true });
+  var rows = <%= session[:backsize2] %>; 
+  if(rows == 0)
+  {
+    $('#results').find('th').hide(); 
+  };
+  $('#pagenum').css("width","30px");
+  $('#pagenum').keypress(function(event) {
+    var code = (event.keyCode ? event.keyCode : event.which);
+    if (!(code >= 48 && code <= 57))
+    {
+      event.preventDefault();
+    }
+  });
+});
+</script>

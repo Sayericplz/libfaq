@@ -134,24 +134,7 @@ class FaqsController < ApplicationController
     session[:secondDate] = params[:secondDate]
     session[:keywords] = params[:keywords]
     session[:question] = params[:question]
-    session[:backpage]=1
-    #if params[:enabled_box]=='1' and params[:disabled_box]=='1'
-    #  @faqs = Faq.all
-    #  session[:enabled] = true
-    # session[:disabled] = true
-    #elsif params[:enabled_box]=='1'
-    #  @faqs = Faq.where("enable = true")
-    #  session[:enabled] = true
-    #  session[:disabled] = false
-    #elsif params[:disabled_box]=='1'
-    #  @faqs = Faq.where("enable = false")
-    #  session[:enabled] = false
-    #  session[:disabled] = true
-    #else
-    #  @faqs = []
-    #  session[:enabled] = false
-    #  session[:disabled]= false 
-    #end
+    session[:backpage] = 1
     @faqs=search()
     @faqs=@faqs[0,15]
     render :index
@@ -234,4 +217,101 @@ class FaqsController < ApplicationController
     end
     @faqs
   end 
+
+  def stats
+    /@records = Record.select('faq_id,sum(count) as total')
+              .group('faq_id')
+              .order('sum(count) DESC')
+    @records = Faq.joins(:records).group('faqs.id').order('sum(count) DESC')/
+
+    session[:firstDate2] = ''
+    session[:secondDate2] = ''
+    session[:backpage2] = 1
+
+    sql = 'SELECT faqs.id as id, faqs.question as question, SUM(records.count) as total
+          FROM faqs 
+          JOIN records ON faqs.id = records.faq_id  
+          GROUP BY faqs.id
+          ORDER BY SUM(records.count) DESC'
+    @records = Faq.find_by_sql(sql)
+    session[:backsize2] = @records.size
+    session[:backpages2] = @records.size / 15
+    if session[:backsize2] > session[:backpages2]*15
+      session[:backpages2] = session[:backpages2]+1
+    end
+    @records = @records[0,15]
+    render :stats
+  end
+
+  def sift2
+    session[:firstDate2] = params[:firstDate2]
+    session[:secondDate2] = params[:secondDate2]
+    session[:backpage2] = 1
+    @records = search2()
+    @records = @records[0,15]
+    render :stats
+  end
+
+  def search2
+    time1 = '1990-01-01'
+    time2 = '2100-12-31' 
+    unless session[:firstDate2].blank?
+      time1 = session[:firstDate2]
+    end   
+    unless session[:secondDate2].blank?
+      time2 = session[:secondDate2]
+    end
+    sql = "SELECT faqs.id as id, faqs.question as question, SUM(records.count) as total
+          FROM records 
+          JOIN faqs ON faqs.id = records.faq_id           
+          WHERE records.thedate >='"+time1+"' and records.thedate <='"+time2+"'  
+          GROUP BY records.faq_id
+          ORDER BY SUM(records.count) DESC"
+    @records = Faq.find_by_sql(sql)
+    session[:backsize2] = @records.size
+    session[:backpages2] = session[:backsize2]/15
+    if session[:backsize2] > session[:backpages2]*15
+      session[:backpages2] = session[:backpages2]+1
+    end
+    @records
+  end 
+
+  def firstpage2
+    session[:backpage2]=1
+    redirect_to changepage2_faqs_path
+  end
+
+  def prepage2
+    if session[:backpage2] != 1
+      session[:backpage2] = session[:backpage2] - 1
+    end
+    redirect_to changepage2_faqs_path  
+  end
+
+  def nextpage2
+    if session[:backpage2] != session[:backpages2]
+      session[:backpage2] = session[:backpage2] + 1
+    end
+    redirect_to changepage2_faqs_path
+  end
+
+  def lastpage2
+    session[:backpage2]=session[:backpages2]
+    redirect_to changepage2_faqs_path
+  end
+
+  def inputpage2
+    if !params[:pagenum].blank?
+      if params[:pagenum].to_i >= 1 and params[:pagenum].to_i <=session[:backpages2]
+        session[:backpage2]=params[:pagenum].to_i
+      end 
+    end
+    redirect_to changepage2_faqs_path
+  end
+
+  def changepage2
+    @records = search2()
+    @records = @records[(session[:backpage2]-1)*15,15]
+    render :stats
+  end
 end

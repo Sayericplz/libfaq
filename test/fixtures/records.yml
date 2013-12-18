@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  faq: 
+  thedate: 2013-12-18
+  count: 1
+
+two:
+  faq: 
+  thedate: 2013-12-18
+  count: 1

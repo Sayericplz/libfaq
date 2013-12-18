@@ -28,6 +28,18 @@ class DmsController < ApplicationController
 
   def show
   	@faq = Faq.find(params[:id])
+    cnt = Record.where(:faq_id => params[:id],:thedate => Date.parse(Time.now.to_s)).count
+    if cnt == 0
+      record = Record.new
+      record.faq_id = params[:id]
+      record.thedate = Date.parse(Time.now.to_s)
+      record.count = 1
+      record.save
+    elsif cnt == 1
+      record = Record.where(:faq_id => params[:id],:thedate => Date.parse(Time.now.to_s)).first
+      record.count += 1
+      record.save
+    end
     @faq.hit += 1
     @faq.save
     @faq
