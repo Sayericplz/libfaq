@@ -6,6 +6,8 @@
 </div>
 <div id = "questionform">
   <%= form_tag(:action=>"search") do %> 
+    <%= label_tag(:welcome,"欢迎您提问，请输入问题：") %>
+    <br>
   	<span>
       <%= text_field_tag :question %>
 	    <%= submit_tag "搜索"%>
@@ -102,6 +104,10 @@ text-decoration:none;
 }
 .hide{
 	display:none;
+}
+
+#welcome{
+  text-align: left
 }
 
 .page{
